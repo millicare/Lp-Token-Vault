@@ -125,7 +125,7 @@ contract UniswapV2BPTMUSTPair is IUniswapV2Pair, UniswapV2ERC20 {
         private
         returns (bool feeOn)
     {
-        address feeTo = IUniswapV2Factory(factory).feeTo();
+        /*address feeTo = IUniswapV2Factory(factory).feeTo();
         feeOn = feeTo != address(0);
         uint256 _kLast = kLast; // gas savings
         if (feeOn) {
@@ -141,7 +141,8 @@ contract UniswapV2BPTMUSTPair is IUniswapV2Pair, UniswapV2ERC20 {
             }
         } else if (_kLast != 0) {
             kLast = 0;
-        }
+        }*/
+        return false;
     }
 
     // this low-level function should be called from a contract which performs important safety checks

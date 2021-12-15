@@ -8,19 +8,23 @@ from brownie import (
 )
 from scripts.helpful_scripts import get_account
 
+MUST_INITIAL_BALANCE = 10000
+BPT_INITIAL_BALANCE = 50000
+
 
 def deploy_must(creator):
     print("\nDeploying UniswapV2MUST...")
-    token = UniswapV2MUST.deploy({"from": creator})
+    # creator gets the tokens
+    must = UniswapV2MUST.deploy(MUST_INITIAL_BALANCE, {"from": creator})
     print("UniswapV2MUST deployed.")
-    return token
+    return must
 
 
 def deploy_bpt(creator):
     print("\nDeploying UniswapV2BPT...")
-    token = UniswapV2BPT.deploy({"from": creator})
+    bpt = UniswapV2BPT.deploy(BPT_INITIAL_BALANCE, {"from": creator})
     print("UniswapV2BPT deployed.")
-    return token
+    return bpt
 
 
 """def deploy_factory(account):
@@ -30,12 +34,37 @@ def deploy_bpt(creator):
     print("Deployed UniswapV2Factory.")"""
 
 
-def deploy_bptmust_pool(creator, bptAddr, mustAddr):
+def deploy_bptmust_pool(creator, user1, bptContract, mustContract):
     print("\nDeploying UniswapV2BPTMUSTPair...")
     lpToken = UniswapV2BPTMUSTPair.deploy({"from": creator})
-    lpToken.initialize(bptAddr, mustAddr, {"from": creator})
-    lpToken.sync({"from": creator})
+    lpToken.initialize(bptContract.address, mustContract.address, {"from": creator})
     print("UniswapV2BPTMUSTPair deployed.")
+
+    print("Funding UniswapV2BPTMUSTPair...")
+    mustTransferTx = mustContract.transfer(
+        lpToken.address, MUST_INITIAL_BALANCE, {"from": creator}
+    )
+    bptTransfeerTx = bptContract.transfer(
+        lpToken.address, BPT_INITIAL_BALANCE, {"from": creator}
+    )
+    mustTransferTx.wait(1)
+    bptTransfeerTx.wait(1)
+    print("LP Contract MUST Balance: ")
+    print(mustContract.balanceOf(lpToken.address, {"from": creator}))
+    print("LP Contract BPT Balance: ")
+    print(bptContract.balanceOf(lpToken.address, {"from": creator}))
+    print("UniswapV2BPTMUSTPair funded.")
+
+    print("Minting UniswapV2BPTMUSTPair LP Token to user1...")
+    mintTx = lpToken.mint(user1.address, {"from": creator})
+    mintTx.wait(1)
+    print("UniswapV2BPTMUSTPair LP Token minted.")
+
+    print("Reserves: ")
+    print(lpToken.getReserves({"from": creator}))
+    print("TotalSupply: ")
+    print(lpToken.totalSupply({"from": creator}))
+
     return lpToken
 
 
@@ -48,13 +77,13 @@ def deploy_farm(creator, mustToken, bptToken, lpToken):
     return farm
 
 
-def deploy_mocks(creator):
+def deploy_mocks(creator, user1):
     # MUST Token
     mustToken = deploy_must(creator)
     # BPT Token
     bptToken = deploy_bpt(creator)
     # BPT/MUST LP Token
-    lpToken = deploy_bptmust_pool(creator, bptToken.address, mustToken.address)
+    lpToken = deploy_bptmust_pool(creator, user1, bptToken, mustToken)
     # Farm
     deploy_farm(creator, mustToken, bptToken, lpToken)
 
@@ -62,4 +91,5 @@ def deploy_mocks(creator):
 def main():
     print(f"The active network is {network.show_active()}")
     creator = get_account(index=0)
-    deploy_mocks(creator)
+    user1 = get_account(index=1)
+    deploy_mocks(creator, user1)

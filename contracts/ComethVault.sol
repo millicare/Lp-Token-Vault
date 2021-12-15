@@ -29,11 +29,16 @@ contract ComethVault {
         _;
     }
 
-    function getDeposit() public onlyUser returns (uint256) {
+    function getDeposit() public view onlyUser returns (uint256) {
         StakingMultiRewards comethFarm = StakingMultiRewards(farm);
 
         // get balance
         return comethFarm.balanceOf(address(this));
+    }
+
+    function getAllowance() public view onlyUser returns (uint256) {
+        IERC20 lpErc20 = IERC20(lpToken);
+        return lpErc20.allowance(msg.sender, address(this));
     }
 
     function deposit(uint256 _amount) public onlyUser {
@@ -51,9 +56,11 @@ contract ComethVault {
         // transferFrom sender to this
         lpErc20.transferFrom(msg.sender, address(this), _amount);
 
+        //StakingMultiRewards comethFarm = StakingMultiRewards(farm);
+        // allow farm
+        //lpErc20.approve(address(comethFarm), _amount);
         // stake in farm
-        StakingMultiRewards comethFarm = StakingMultiRewards(farm);
-        comethFarm.stake(_amount);
+        //comethFarm.stake(_amount);
     }
 
     function withdraw(uint256 _amount) public onlyUser {
