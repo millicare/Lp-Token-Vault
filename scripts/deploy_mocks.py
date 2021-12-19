@@ -8,8 +8,8 @@ from brownie import (
 )
 from scripts.helpful_scripts import get_account
 
-MUST_INITIAL_BALANCE = 10000
-BPT_INITIAL_BALANCE = 50000
+MUST_INITIAL_BALANCE = 100000
+BPT_INITIAL_BALANCE = 500000
 
 
 def deploy_must(creator):
