@@ -1,11 +1,11 @@
 dependencies:
-  #- OpenZeppelin/openzeppelin-contracts@4.4.0
+  - OpenZeppelin/openzeppelin-contracts@2.5.1
   - Uniswap/v2-core@1.0.1
 compiler:
   solc:
     version: 0.5.16
     remappings:
-      #- "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.4.0"
+      - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@2.5.1"
       - "@Uniswap=Uniswap/v2-core@1.0.1"
 dotenv: .env
 networks:

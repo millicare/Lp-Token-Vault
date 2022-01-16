@@ -3,7 +3,8 @@
  */
 
 import "@Uniswap/contracts/libraries/Math.sol";
-import "@Uniswap/contracts/interfaces/IERC20.sol";
+//import "@Uniswap/contracts/interfaces/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 // File: contracts/lib/SafeMath.sol
 
@@ -117,13 +118,13 @@ library SafeMathCometh {
 
 // File: contracts/lib/Address.sol
 
-pragma solidity ^0.5.16;
+/*pragma solidity ^0.5.16;
 
-/**
+*
  * @dev Collection of functions related to the address type,
  */
-library Address {
-    /**
+//library Address {
+/**
      * @dev Returns true if `account` is a contract.
      *
      * This test is non-exhaustive, and there may be false-negatives: during the
@@ -132,7 +133,7 @@ library Address {
      *
      * > It is unsafe to assume that an address for which this function returns
      * false is an externally-owned account (EOA) and not a contract.
-     */
+    
     function isContract(address account) internal view returns (bool) {
         // This method relies in extcodesize, which returns 0 for contracts in
         // construction, since the code is only stored at the end of the
@@ -145,11 +146,11 @@ library Address {
         }
         return size > 0;
     }
-}
+} */
 
 // File: contracts/lib/SafeERC20.sol
 
-pragma solidity ^0.5.16;
+//pragma solidity ^0.5.16;
 
 /**
  * @title SafeERC20
@@ -159,7 +160,7 @@ pragma solidity ^0.5.16;
  * successful.
  * To use this library you can add a `using SafeERC20 for ERC20;` statement to your contract,
  * which allows you to call the safe operations as `token.safeTransfer(...)`, etc.
- */
+
 library SafeERC20 {
     using SafeMathCometh for uint256;
     using Address for address;
@@ -240,14 +241,14 @@ library SafeERC20 {
                 newAllowance
             )
         );
-    }
+    } */
 
-    /**
+/**
      * @dev Imitates a Solidity high-level call (i.e. a regular function call to a contract), relaxing the requirement
      * on the return value: the return value is optional (but if data is returned, it must not be false).
      * @param token The token targeted by the call.
      * @param data The call data (encoded using abi.encode or one of its variants).
-     */
+     
     function callOptionalReturn(IERC20 token, bytes memory data) private {
         // We need to perform a low level call here, to bypass Solidity's return data size checking mechanism, since
         // we're implementing it ourselves.
@@ -273,7 +274,7 @@ library SafeERC20 {
         }
     }
 }
-
+*/
 // File: contracts/ERC20Detailed.sol
 
 pragma solidity ^0.5.16;

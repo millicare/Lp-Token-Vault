@@ -45,6 +45,9 @@ def withdraw(creator, user1):
     vaultAllowance = lpToken.allowance(vault.address, user1.address, {"from": creator})
     print(f"Vault allowance: {vaultAllowance}")
 
+    userBalance = lpToken.balanceOf(user1.address, {"from": creator})
+    print(f"User balance: {userBalance}")
+
 
 def exit(creator, user1):
     print("Exit from vault")

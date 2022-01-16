@@ -2,11 +2,14 @@
 
 pragma solidity ^0.5.16;
 
-import "@Uniswap/contracts/UniswapV2ERC20.sol";
-import "@Uniswap/contracts/interfaces/IUniswapV2Pair.sol";
+//import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+//import "@Uniswap/contracts/UniswapV2ERC20.sol";
+//import "@Uniswap/contracts/interfaces/IUniswapV2Pair.sol";
 import "./farms/ComethFarm.sol";
 
 contract ComethVault {
+    using SafeERC20 for IERC20;
+
     address public farm;
     address public lpToken;
     address public user;
@@ -60,7 +63,7 @@ contract ComethVault {
         // allow farm
         lpErc20.approve(address(comethFarm), _amount); // ok
         // stake in farm
-        comethFarm.stake(_amount); // ne fait rien ?
+        comethFarm.stake(_amount);
     }
 
     function withdraw(uint256 _amount) public onlyUser {
@@ -86,7 +89,7 @@ contract ComethVault {
             "allowed is less than desired _amount"
         );
 
-        lpErc20.transferFrom(address(this), msg.sender, _amount);
+        lpErc20.transfer(msg.sender, _amount);
     }
 
     function exit() public onlyUser {
@@ -118,7 +121,7 @@ contract ComethVault {
         uint256[] memory earned = comethFarm.earned(user);
         IERC20[] memory rewardsTokens = comethFarm.getRewardsTokens();
 
-        IUniswapV2Pair uniLp = IUniswapV2Pair(lpToken);
+        //IUniswapV2Pair uniLp = IUniswapV2Pair(lpToken);
 
         // sell some..
 
