@@ -78,20 +78,7 @@ contract ComethVault {
 
         // transferFrom this to sender
         IERC20 lpErc20 = IERC20(lpToken);
-        //lpErc20.approve(msg.sender, _amount);
-        //lpErc20.approve(address(this), _amount);
-
-        // verify token allowance
-        //uint256 amountAllowed = lpErc20.allowance(address(this), msg.sender);
-
-        // revert on bad allowance
-        //require(
-        //    amountAllowed >= _amount,
-        //    "allowed is less than desired _amount"
-        //);
-
         lpErc20.transfer(msg.sender, _amount);
-        //lpErc20.transferFrom(address(this), msg.sender, _amount);
     }
 
     function exit() public onlyUser {
@@ -105,14 +92,11 @@ contract ComethVault {
         uint256[] memory rewardsBalance = comethFarm.getRewards(address(this));
 
         // transfer the removed lp tokens
-        lpErc20.transferFrom(address(this), msg.sender, lpBalance);
+        lpErc20.transfer(msg.sender, lpBalance);
+
         // transfer the rewards
         for (uint256 i = 0; i < rewardsTokens.length; i++) {
-            rewardsTokens[i].transferFrom(
-                address(this),
-                msg.sender,
-                rewardsBalance[i]
-            );
+            rewardsTokens[i].transfer(msg.sender, rewardsBalance[i]);
         }
     }
 
