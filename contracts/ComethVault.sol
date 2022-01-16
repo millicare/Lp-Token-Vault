@@ -78,18 +78,20 @@ contract ComethVault {
 
         // transferFrom this to sender
         IERC20 lpErc20 = IERC20(lpToken);
-        lpErc20.approve(msg.sender, _amount);
+        //lpErc20.approve(msg.sender, _amount);
+        //lpErc20.approve(address(this), _amount);
 
         // verify token allowance
-        uint256 amountAllowed = lpErc20.allowance(address(this), msg.sender);
+        //uint256 amountAllowed = lpErc20.allowance(address(this), msg.sender);
 
         // revert on bad allowance
-        require(
-            amountAllowed >= _amount,
-            "allowed is less than desired _amount"
-        );
+        //require(
+        //    amountAllowed >= _amount,
+        //    "allowed is less than desired _amount"
+        //);
 
         lpErc20.transfer(msg.sender, _amount);
+        //lpErc20.transferFrom(address(this), msg.sender, _amount);
     }
 
     function exit() public onlyUser {
