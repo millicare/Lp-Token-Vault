@@ -5,6 +5,7 @@ from brownie import (
     UniswapV2BPTMUSTPair,
     StakingMultiRewards,
     network,
+    Contract,
 )
 from scripts.helpful_scripts import get_account
 

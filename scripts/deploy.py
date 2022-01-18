@@ -1,41 +1,43 @@
 from brownie import (
     ComethVault,
-    StakingMultiRewards,
-    UniswapV2BPTMUSTPair,
     network,
     config,
 )
 from scripts.helpful_scripts import (
     get_account,
+    get_contract,
+    retrieve_live_contracts,
     LOCAL_BLOCKCHAIN_ENVIRONMENTS,
+    FORKED_LOCAL_ENVIRONMENTS,
 )
 from scripts.deploy_mocks import deploy_mocks
 
-"""
-ComethVault constructor
-  address _farm,
-  address _lpToken,
-  address _user
-"""
-
 
 def deploy_cometh_vault(creator, user1):
-    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
-        print("Environment not configured for live network")
+    activenetwork = network.show_active()
+    if (
+        activenetwork not in LOCAL_BLOCKCHAIN_ENVIRONMENTS
+        and activenetwork in FORKED_LOCAL_ENVIRONMENTS
+    ):
+        print("Retrieving live contracts")
+        retrieve_live_contracts()
     else:
+        print("Deploying mocks")
         deploy_mocks(creator, user1)
-        lpTokenAddr = UniswapV2BPTMUSTPair[-1].address
-        farmAddr = StakingMultiRewards[-1].address
-        print(f"Deploy ComethVault [farm={farmAddr}, lpToken={lpTokenAddr}]")
-        cometh_vault = ComethVault.deploy(
-            farmAddr,
-            lpTokenAddr,
-            user1.address,
-            {"from": creator},
-            publish_source=config["networks"][network.show_active()].get("verify"),
-        )
-        print(f"Contract deployed to {cometh_vault.address}")
-        return cometh_vault
+
+    lpTokenAddr = get_contract("bptmustpool").address
+    farmAddr = get_contract("bptmustfarm").address
+
+    print(f"Deploy ComethVault [farm={farmAddr}, lpToken={lpTokenAddr}]")
+    cometh_vault = ComethVault.deploy(
+        farmAddr,
+        lpTokenAddr,
+        user1.address,
+        {"from": creator},
+        publish_source=config["networks"][network.show_active()].get("verify"),
+    )
+    print(f"Contract deployed to {cometh_vault.address}")
+    return cometh_vault
 
 
 def main():

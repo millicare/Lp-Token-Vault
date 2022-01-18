@@ -2,10 +2,12 @@
 
 pragma solidity ^0.5.16;
 
-//import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+
 //import "@Uniswap/contracts/UniswapV2ERC20.sol";
 //import "@Uniswap/contracts/interfaces/IUniswapV2Pair.sol";
-import "./farms/ComethFarm.sol";
+//import "./farms/ComethFarm.sol";
+import "../interfaces/IStakingMultiRewards.sol";
 
 contract ComethVault {
     using SafeERC20 for IERC20;
@@ -33,7 +35,7 @@ contract ComethVault {
     }
 
     function getDeposit() public view onlyUser returns (uint256) {
-        StakingMultiRewards comethFarm = StakingMultiRewards(farm);
+        IStakingMultiRewards comethFarm = IStakingMultiRewards(farm);
 
         // get balance
         return comethFarm.balanceOf(address(this));
@@ -59,7 +61,7 @@ contract ComethVault {
         // transferFrom sender to this
         lpErc20.transferFrom(msg.sender, address(this), _amount);
 
-        StakingMultiRewards comethFarm = StakingMultiRewards(farm);
+        IStakingMultiRewards comethFarm = IStakingMultiRewards(farm);
         // allow farm
         lpErc20.approve(address(comethFarm), _amount); // ok
         // stake in farm
@@ -67,7 +69,7 @@ contract ComethVault {
     }
 
     function withdraw(uint256 _amount) public onlyUser {
-        StakingMultiRewards comethFarm = StakingMultiRewards(farm);
+        IStakingMultiRewards comethFarm = IStakingMultiRewards(farm);
 
         // get balance
         uint256 balance = comethFarm.balanceOf(address(this));
@@ -82,13 +84,13 @@ contract ComethVault {
     }
 
     function exit() public onlyUser {
-        StakingMultiRewards comethFarm = StakingMultiRewards(farm);
+        IStakingMultiRewards comethFarm = IStakingMultiRewards(farm);
         comethFarm.exit();
 
         IERC20 lpErc20 = IERC20(lpToken);
 
         uint256 lpBalance = lpErc20.balanceOf(address(this));
-        IERC20[] memory rewardsTokens = comethFarm.getRewardsTokens();
+        /*IERC20[] memory rewardsTokens = comethFarm.getRewardsTokens(); // getRewardsTokens implemented but not in interface
         uint256[] memory rewardsBalance = comethFarm.getRewards(address(this));
 
         // transfer the removed lp tokens
@@ -97,19 +99,21 @@ contract ComethVault {
         // transfer the rewards
         for (uint256 i = 0; i < rewardsTokens.length; i++) {
             rewardsTokens[i].transfer(msg.sender, rewardsBalance[i]);
-        }
+        }*/
     }
 
     function compound() public {
-        StakingMultiRewards comethFarm = StakingMultiRewards(farm);
+        IStakingMultiRewards comethFarm = IStakingMultiRewards(farm);
 
         // current earned
         uint256[] memory earned = comethFarm.earned(user);
-        IERC20[] memory rewardsTokens = comethFarm.getRewardsTokens();
+        /*IERC20[] memory rewardsTokens = comethFarm.getRewardsTokens();
+        uint256[] memory rewardsBalance = comethFarm.getRewards(address(this));
 
-        //IUniswapV2Pair uniLp = IUniswapV2Pair(lpToken);
+        IERC20 lpErc20 = IERC20(lpToken);*/
 
-        // sell some..
+        // get liquidity quote
+        //getAmountIn
 
         // new lp
 

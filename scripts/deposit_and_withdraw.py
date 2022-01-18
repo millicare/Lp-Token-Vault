@@ -1,11 +1,11 @@
 from brownie import StakingMultiRewards, ComethVault, UniswapV2BPTMUSTPair
-from scripts.helpful_scripts import get_account
+from scripts.helpful_scripts import get_account, get_contract
 
 
 def deposit(creator, user1):
     print("Deposit in vault")
-    lpToken = UniswapV2BPTMUSTPair[-1]
-    vault = ComethVault[-1]
+    lpToken = get_contract("bptmustpool")
+    vault = get_contract("vault")
 
     amount = 1000
     # user1 allow vault to spend lpToken
@@ -23,9 +23,8 @@ def deposit(creator, user1):
 
 def withdraw(creator, user1):
     print("Withdraw 10 per cent of the deposit amount from the Vault")
-    vault = ComethVault[-1]
-    lpToken = UniswapV2BPTMUSTPair[-1]
-    farm = StakingMultiRewards[-1]
+    vault = get_contract("vault")
+    lpToken = get_contract("bptmustpool")
 
     vaultBalance = lpToken.balanceOf(vault.address, {"from": creator})
     print(f"Vault balance: {vaultBalance}")
@@ -51,7 +50,7 @@ def withdraw(creator, user1):
 
 def exit(creator, user1):
     print("Exit from vault")
-    vault = ComethVault[-1]
+    vault = get_contract("vault")
     exitTx = vault.exit({"from": user1})
     exitTx.wait(1)
 
