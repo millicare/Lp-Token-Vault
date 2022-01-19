@@ -9,15 +9,15 @@ compiler:
       - "@Uniswap=Uniswap/v2-core@1.0.1"
 dotenv: .env
 networks:
-  defaults: ganache-local
+  defaults: polygon-main-fork
   polygon-main-fork:
     verify: false
-    addresses:
-      bpt: "0x6863bd30c9e313b264657b107352ba246f8af8e0"
-      must: "0x9c78ee466d6cb57a4d01fd887d2b5dfb2d46288f"
+    contracts:
       factory: "0x800b052609c355ca8103e06f022aa30647ead60a"
       bptmustpool: "0xC8978A3de5Ce54E1A2FE88d2036e2CC972238126"
       bptmustfarm: "0xe29544a8145978a2355E44fBAC61F4748f0EcCA6"
+      must: "0x9c78ee466d6cb57a4d01fd887d2b5dfb2d46288f"
+      bpt_proxy: "0x6863bd30c9e313b264657b107352ba246f8af8e0"
   rinkeby2:
     verify: true
   mainnet-fork-dev:

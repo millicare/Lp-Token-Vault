@@ -36,15 +36,30 @@ def privatekey_fromseed(private_key_seed_ascii):
     print(priv_key.hex())
 
 
+PROXY_SUFFIX = "_proxy"
+
+
 def retrieve_live_contracts():
-    if network.show_active() == "polygon-main-fork":
-        for contractalias in config["networks"][network.show_active()]["addresses"]:
-            addr = config["networks"][network.show_active()]["addresses"][contractalias]
+    activenetwork = network.show_active()
+    if activenetwork == "polygon-main-fork":
+        for contractalias in config["networks"][activenetwork]["contracts"]:
+            addr = config["networks"][activenetwork]["contracts"][contractalias]
             print("Getting " + contractalias + " contract at " + addr + "...")
             contract = Contract.from_explorer(addr)
             contract.set_alias(contractalias)
-        # account = get_account()
-        # print(Contract("bptmustfarm").totalSupply({"from": account}))
+            # manage to get implementation from proxy
+            if contractalias.endswith(PROXY_SUFFIX):
+                implementationAddr = contract.implementation({"from": get_account()})
+                implementationAlias = contractalias.replace(PROXY_SUFFIX, "")
+                print(
+                    "Getting "
+                    + implementationAlias
+                    + " implementation contract at "
+                    + implementationAddr
+                    + "..."
+                )
+                implementationContract = Contract.from_explorer(implementationAddr)
+                implementationContract.set_alias(implementationAlias)
     else:
         print("bad network")
 
