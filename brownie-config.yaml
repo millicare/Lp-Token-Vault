@@ -28,3 +28,4 @@ networks:
     verify: false
 wallets:
   from_key: ${PRIVATE_KEY}
+  ledger_public_key: ${LEDGER_PUBLIC_ADDR}
